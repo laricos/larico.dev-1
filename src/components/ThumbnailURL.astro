@@ -1,7 +1,41 @@
 ---
-const { url } = Astro.props;
-const thumbnailURL = `https://image.thum.io/get/width/480/crop/768/${encodeURIComponent(url)}`;
+interface Props {
+  url: string;
+  alt?: string;
+  width?: number;
+  height?: number;
+}
+
+const {
+  url,
+  alt = "Website thumbnail",
+  width = 480,
+  height = 270,
+} = Astro.props;
+
+const isValid = typeof url === "string" && url.trim() !== "";
+const thumbnailURL = isValid
+  ? `https://image.thum.io/get/width/${width}/crop/768/${url}`
+  : null;
 ---
+
+{
+  isValid ? (
+    <div class="thumbnail-wrapper">
+      <div class="spinner" id="spinner" />
+      <img
+        src={thumbnailURL}
+        alt={alt}
+        class="thumb"
+        id="thumbnail"
+        width={width}
+        height={height}
+      />
+    </div>
+  ) : (
+    <p>No se proporcionó una URL válida.</p>
+  )
+}
 
 <style>
   .thumbnail-wrapper {
@@ -51,18 +85,15 @@ const thumbnailURL = `https://image.thum.io/get/width/480/crop/768/${encodeURICo
   }
 </style>
 
-<div class="thumbnail-wrapper" client:load>
-  <div class="spinner" id="spinner"></div>
-  <img
-    src={thumbnailURL}
-    alt="Website thumbnail"
-    class="thumb"
-    id="thumbnail"
-    width="480"
-    height="auto"
-    on:load={() => {
-      document.getElementById("spinner")?.remove();
-      document.getElementById("thumbnail")?.classList.add("loaded");
-    }}
-  />
-</div>
+<script>
+  window.addEventListener("load", () => {
+    const thumb = document.getElementById("thumbnail");
+    const spinner = document.getElementById("spinner");
+    if (thumb && spinner) {
+      thumb.addEventListener("load", () => {
+        spinner.remove();
+        thumb.classList.add("loaded");
+      });
+    }
+  });
+</script>
