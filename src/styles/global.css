@@ -15,10 +15,9 @@
  		0 16px 32px rgba(var(--gray), 33%);
  }
 
-
- /* @view-transition {
-     navigation: auto;
- } */
+ @view-transition {
+ 	navigation: auto;
+ }
 
 
 

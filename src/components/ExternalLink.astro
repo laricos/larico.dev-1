@@ -19,5 +19,6 @@ const {
 
 <a href={href} title={title} class={className} target={target} rel={rel}>
   {icon && <span class="icon">{icon}</span>}
-  <span>{title}</span>
+
+  <slot />
 </a>

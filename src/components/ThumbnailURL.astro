@@ -4,6 +4,7 @@ interface Props {
   alt?: string;
   width?: number;
   height?: number;
+  class?: string;
 }
 
 const {
@@ -11,6 +12,7 @@ const {
   alt = "Website thumbnail",
   width = 480,
   height = 270,
+  class: className = "",
 } = Astro.props;
 
 const isValid = typeof url === "string" && url.trim() !== "";
@@ -21,79 +23,24 @@ const thumbnailURL = isValid
 
 {
   isValid ? (
-    <div class="thumbnail-wrapper">
-      <div class="spinner" id="spinner" />
-      <img
-        src={thumbnailURL}
-        alt={alt}
-        class="thumb"
-        id="thumbnail"
-        width={width}
-        height={height}
-      />
-    </div>
+    <img
+      src={thumbnailURL}
+      alt={alt}
+      width={width}
+      height={height}
+      class={`thumb aspect-[16/9] ${className}`}
+      loading="lazy"
+    />
   ) : (
     <p>No se proporcionó una URL válida.</p>
   )
 }
 
 <style>
-  .thumbnail-wrapper {
-    position: relative;
-    width: 100%;
-    overflow: hidden;
-    background-color: #f0f0f0;
-    margin-bottom: 20px;
-  }
-
-  .spinner {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1;
-  }
-
-  .spinner::after {
-    content: "";
-    width: 40px;
-    height: 40px;
-    border: 4px solid #ccc;
-    border-top-color: #333;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-  }
-
-  @keyframes spin {
-    to {
-      transform: rotate(360deg);
-    }
-  }
-
   .thumb {
     display: block;
     width: 100%;
     height: auto;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    aspect-ratio: 16/9;
-  }
-
-  .thumb.loaded {
-    opacity: 1;
+    margin-bottom: 20px;
   }
 </style>
-
-<script>
-  window.addEventListener("load", () => {
-    const thumb = document.getElementById("thumbnail");
-    const spinner = document.getElementById("spinner");
-    if (thumb && spinner) {
-      thumb.addEventListener("load", () => {
-        spinner.remove();
-        thumb.classList.add("loaded");
-      });
-    }
-  });
-</script>

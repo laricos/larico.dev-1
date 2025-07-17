@@ -1,6 +1,7 @@
 ---
 import Layout from "../layouts/BlogPost.astro";
-import AboutHeroImage from "../assets/placeholder.jpg";
+const AboutHeroImage =
+  "https://res.cloudinary.com/wwws/image/upload/v1749847645/astro-multisite/larico.dev/oqco2uztkrgtcihdv1pj.png";
 
 import { SITE_INFO } from "../consts";
 
@@ -42,12 +43,7 @@ const currentLangTagsString = homePageTags
   title="Chris Larico ✨"
   description="Chris Larico Front-End Developer “I love to make things work and look awesome”"
   pubDate={new Date("July 16 2025")}
-  heroImage={{
-    src: "https://res.cloudinary.com/wwws/image/upload/v1749847645/astro-multisite/larico.dev/oqco2uztkrgtcihdv1pj.png",
-    width: 1200,
-    height: 630,
-    format: "png",
-  }}
+  heroImage={AboutHeroImage}
 >
   <div class="head-area">
     <span class="persona-title"> Front-End Developer </span>
