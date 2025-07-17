@@ -1,0 +1,60 @@
+---
+export interface Props {
+  tags: string[];
+  tagsLabel: string;
+  currentTag?: string;
+  type?: "blog";
+}
+const { tags, tagsLabel, currentTag, type = "blog" } = Astro.props;
+---
+
+{
+  tags.length > 0 && (
+    <ul class="ul_reset tags">
+      {/* {tagsLabel}:{" "} */}
+      {tags.map((tag, i) => (
+        <li>
+          <a
+            href={`/${type}?tag=${encodeURIComponent(tag)}`}
+            class={currentTag === tag ? "current" : ""}
+          >
+            #{tag}
+            {i < tags.length - 1 ? "  " : ""}
+          </a>
+        </li>
+      ))}
+      {currentTag && !tags.includes(currentTag) && (
+        <span class="current">#{currentTag}</span>
+      )}
+    </ul>
+  )
+}
+
+<style>
+  .tags {
+    text-align: center;
+    margin-bottom: 40px;
+
+    li {
+      display: inline-block;
+      margin: 0 5px;
+      a {
+        display: block;
+        padding: 2px 12px;
+        text-decoration: none;
+        color: rgb(var(--gray));
+        background-color: #fff;
+        border-radius: 50px;
+
+        font-size: 1rem;
+        transition:
+          color 0.3s ease-in-out,
+          background-color 0.3s ease-in-out;
+        &:hover {
+          color: #fff;
+          background-color: var(--accent);
+        }
+      }
+    }
+  }
+</style>

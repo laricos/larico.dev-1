@@ -1,0 +1,42 @@
+---
+import { type CollectionEntry, getCollection } from "astro:content";
+import BlogPost from "../../layouts/BlogPost.astro";
+import { render } from "astro:content";
+import EditThisPost from "@/components/EditThisPost.astro";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("blog");
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: post,
+  }));
+}
+type Props = CollectionEntry<"blog">;
+
+const post = Astro.props;
+const { Content } = await render(post);
+export const prerender = true;
+---
+
+<BlogPost {...post.data}>
+  <Content />
+
+  <EditThisPost
+    sourcePath={`src/content/blog/${post.id}${post.body?.endsWith(".mdx") ? ".mdx" : ".md"}`}
+  />
+
+  <div class="back-to-blog">
+    <a href="/blog" class="back-link"> <span> ← Volver al blog</span></a>
+  </div>
+</BlogPost>
+
+<style>
+  .back-to-blog {
+    text-align: center;
+    a {
+      text-decoration: none;
+      display: block;
+      padding: 20px;
+    }
+  }
+</style>

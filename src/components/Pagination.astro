@@ -1,0 +1,71 @@
+---
+export interface Props {
+  totalPages: number;
+  currentPage: number;
+  paginationBase: string;
+  baseQuery: string;
+  previous: string;
+  next: string;
+}
+const { totalPages, currentPage, paginationBase, baseQuery, previous, next } =
+  Astro.props;
+---
+
+{
+  totalPages > 1 && (
+    <nav class="pagination">
+      {currentPage > 1 && (
+        <a href={`${paginationBase}${baseQuery}page=${currentPage - 1}`}>
+          {previous}
+        </a>
+      )}
+      {Array.from({ length: totalPages }).map((_, i) => {
+        const pageNum = i + 1;
+        const isActive = pageNum === currentPage;
+        const url = `${paginationBase}${baseQuery}page=${pageNum}`;
+        return (
+          <a href={url} class={isActive ? "current" : ""}>
+            {pageNum}
+          </a>
+        );
+      })}
+      {currentPage < totalPages && (
+        <a href={`${paginationBase}${baseQuery}page=${currentPage + 1}`}>
+          <span>{next}</span>
+        </a>
+      )}
+    </nav>
+  )
+}
+
+<style>
+  .pagination {
+    text-align: center;
+    margin-bottom: 50px;
+    padding-top: 20px;
+
+    a {
+      width: 42px;
+      aspect-ratio: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: solid var(--primary-color);
+      margin: 0 6px;
+      border-radius: 50%;
+      font-size: 1.2rem;
+      font-weight: bold;
+      text-decoration: none;
+      color: var(--primary-color);
+      transition: all 0.3s ease-in-out;
+      line-height: 1;
+      padding-top: 2px;
+
+      &:hover,
+      &.current {
+        background-color: var(--primary-color);
+        color: #fff;
+      }
+    }
+  }
+</style>

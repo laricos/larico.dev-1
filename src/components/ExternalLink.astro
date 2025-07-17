@@ -1,0 +1,23 @@
+---
+interface Props {
+  href: string;
+  title?: string;
+  class?: string;
+  target?: string;
+  rel?: string;
+  icon?: any;
+}
+const {
+  href,
+  title,
+  class: className = "",
+  target = "_blank",
+  rel = "noopener noreferrer",
+  icon,
+} = Astro.props;
+---
+
+<a href={href} title={title} class={className} target={target} rel={rel}>
+  {icon && <span class="icon">{icon}</span>}
+  <span>{title}</span>
+</a>

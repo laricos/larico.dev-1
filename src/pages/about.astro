@@ -1,0 +1,208 @@
+---
+import Layout from "../layouts/BlogPost.astro";
+import AboutHeroImage from "../assets/placeholder.jpg";
+
+import { SITE_INFO } from "../consts";
+
+const homePageTags = [
+  "HTML",
+  "CSS",
+  "JavaScript",
+  "Typescript",
+  "Tailwind",
+  "React",
+  "Next.js",
+  "Qwik",
+  "WordPress",
+  "UI/UX",
+  "SVG",
+  "Animation",
+  "Webdev",
+  "VTEX",
+  "Responsive",
+  "Figma",
+  "PhotoShop",
+  "PSD2HTML",
+  "Gsap",
+  "Shopify",
+  "Astro",
+  "Apps",
+  "Web Design",
+  "Hosting",
+  "Domain Names",
+  "Web Development",
+];
+const currentLangTagsString = homePageTags
+  .map((tag) => `<i>${tag}</i>`)
+  .join(" ");
+---
+
+<Layout
+  class:list={["about"]}
+  title="Chris Larico ✨"
+  description="Chris Larico Front-End Developer “I love to make things work and look awesome”"
+  pubDate={new Date("July 16 2025")}
+  heroImage={{
+    src: "https://res.cloudinary.com/wwws/image/upload/v1749847645/astro-multisite/larico.dev/oqco2uztkrgtcihdv1pj.png",
+    width: 1200,
+    height: 630,
+    format: "png",
+  }}
+>
+  <div class="head-area">
+    <span class="persona-title"> Front-End Developer </span>
+  </div>
+  <quote> “I love to make things work and look awesome” </quote>
+
+  <p class="summary">
+    Hi!👋 I'm Web <strong>Front-End developer</strong> from Peru 🇵🇪, passionate about
+    design, clean code, and ever-evolving technology. I’ve been creating efficient,
+    modern, and responsive digital experiences for businesses and entrepreneurs for
+    years.
+  </p>
+
+  <div class="tickers">
+    <div class="ticker">
+      <span
+        class="ticker__text"
+        style="--animation-duration: 55s;"
+        set:html={currentLangTagsString + currentLangTagsString}
+      />
+    </div>
+
+    <div class="ticker">
+      <span
+        class="ticker__text"
+        style="--animation-duration: 75s;"
+        set:html={currentLangTagsString + currentLangTagsString}
+      />
+    </div>
+
+    <div class="ticker">
+      <span
+        class="ticker__text"
+        style="--animation-duration: 95s;"
+        set:html={currentLangTagsString + currentLangTagsString}
+      />
+    </div>
+  </div>
+
+  <p>
+    My main tech stack includes <strong>
+      HTML, CSS, JavaScript, ReactJS, WordPress, Shopify, Astro, Qwik, and
+      Next.js</strong
+    >, with a strong focus on accessibility, performance, and responsive design.
+  </p>
+  <h3>What I Do</h3>
+  <ul>
+    <li>Website design and front-end development</li>
+    <li>
+      <strong>Hosting</strong> and <strong>domain</strong> management & sales
+    </li>
+    <li><strong>Digital consulting</strong> and web strategy</li>
+    <li>Technical support and maintenance</li>
+    <li>Social media management</li>
+    <li>
+      Custom <strong>apps</strong> and <strong>Chrome extensions</strong>
+    </li>
+  </ul>
+  <p>
+    I'm a <strong>freelancer</strong>, but I also love collaborating with teams
+    and building long-term partnerships with other professionals.
+  </p>
+  <h3>Beyond the Code</h3>
+  <p>
+    Born on <strong>June 26</strong>, under the sign of <strong>
+      Cancer</strong
+    >. I enjoy camping, outdoor cooking, beach barbecues, and discovering new
+    places.
+  </p>
+  <p>
+    While working, I usually listen to <strong>trance music</strong> — especially
+    Vocal Trance Emocional, Uplifting, Synthwave & Italo Disco.
+  </p>
+  <h3>Contact</h3>
+  <p>
+    📫 <a
+      title={`Send a message to ${SITE_INFO.email}`}
+      href={`mailto:${SITE_INFO.email}`}>{SITE_INFO.email}</a
+    >
+  </p>
+</Layout>
+
+<style is:global>
+  .about .title {
+    margin-bottom: 0 !important;
+    line-height: 0;
+    padding-top: 50px !important;
+    padding-bottom: 0 !important;
+    hr {
+      margin-top: 0;
+      margin-bottom: 12px;
+    }
+  }
+  .about .title h1 {
+    color: #ff6600;
+    margin-bottom: 0 !important;
+  }
+  .first-word {
+    color: #000;
+  }
+</style>
+
+<style>
+  .head-area {
+    text-align: center;
+    margin-bottom: 1rem;
+    line-height: 1;
+  }
+
+  .name {
+    text-align: center;
+    line-height: normal;
+    margin: 0;
+  }
+
+  .persona-title {
+    text-transform: uppercase;
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+  }
+
+  quote {
+    display: block;
+    font-family: "Times New Roman", Times, serif;
+    font-style: italic;
+    text-wrap: balance;
+    text-align: center;
+  }
+
+  .prose {
+    font-size: 0.9rem;
+    text-align: center;
+  }
+  .summary {
+    margin-bottom: 0;
+  }
+
+  @media (min-width: 768px) {
+    .persona-title {
+      font-size: 1rem;
+    }
+
+    .prose {
+      font-size: 1.1rem;
+    }
+  }
+</style>
+
+<script is:inline>
+  const h1s = document.querySelectorAll("h1");
+  h1s.forEach((h1) => {
+    const words = h1.textContent.trim().split(" ");
+    if (words.length > 0) {
+      const first = words.shift();
+      h1.innerHTML = `<span class="first-word">${first}</span> ${words.join(" ")}`;
+    }
+  });
+</script>

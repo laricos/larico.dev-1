@@ -1,0 +1,49 @@
+---
+import { SITE_INFO } from "../consts";
+---
+
+<div class="social-links">
+  {
+    SITE_INFO.socialLinks.map((link) => {
+      const title = link.title;
+      return (
+        <a
+          href={link.url}
+          title={title}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="social-link"
+        >
+          <span class="icon" set:html={link.icon} />
+          <span class="label">{title}</span>
+        </a>
+      );
+    })
+  }
+</div>
+
+<style>
+  .social-links {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin: 1rem 0;
+  }
+  .social-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
+    transition: color 0.2s;
+  }
+  .social-link:hover {
+    color: var(--secondary-color);
+  }
+  .icon {
+    display: inline-flex;
+    margin-right: 0.5rem;
+  }
+  .label {
+    display: none;
+  }
+</style>

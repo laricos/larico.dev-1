@@ -1,0 +1,234 @@
+---
+import BaseHead from "../../components/BaseHead.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import { SITE_TITLE, SITE_DESCRIPTION, SITE_LANG } from "../../consts";
+import { getCollection } from "astro:content";
+import FormattedDate from "../../components/FormattedDate.astro";
+import { Image } from "astro:assets";
+import Categories from "../../components/Categories.astro";
+import Tags from "../../components/Tags.astro";
+import Pagination from "../../components/Pagination.astro";
+
+const PAGE_SIZE = 9;
+const url = new URL(Astro.url, Astro.site);
+const currentPage = parseInt(url.searchParams.get("page") ?? "1");
+const currentCategory = url.searchParams.get("category") ?? null;
+const currentTag = url.searchParams.get("tag") ?? null;
+
+let posts = await getCollection("blog");
+
+// Extraer categorías y tags únicos
+type Post = (typeof posts)[number];
+const allCategories = Array.from(
+  new Set(posts.map((post) => post.data.category).filter(Boolean))
+);
+const allTags = Array.from(
+  new Set(posts.flatMap((post) => post.data.tags ?? []).filter(Boolean))
+);
+
+// Filtrar por categoría/tag si corresponde
+if (currentCategory) {
+  posts = posts.filter((post) => post.data.category === currentCategory);
+}
+if (currentTag) {
+  posts = posts.filter((post) => (post.data.tags ?? []).includes(currentTag));
+}
+
+// Ordenar y paginar
+posts = posts.sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+const totalPages = Math.ceil(posts.length / PAGE_SIZE);
+const paginatedPosts = posts.slice(
+  (currentPage - 1) * PAGE_SIZE,
+  currentPage * PAGE_SIZE
+);
+
+const paginationBase = "/blog?";
+const baseQuery = `${currentCategory ? `category=${encodeURIComponent(currentCategory)}&` : ""}${currentTag ? `tag=${encodeURIComponent(currentTag)}&` : ""}`;
+---
+
+<!doctype html>
+<html lang={SITE_LANG}>
+  <head>
+    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+    <style>
+      main {
+        width: 100%;
+        margin: 0 auto 50px auto;
+        padding: 0;
+      }
+      .articles {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2rem;
+
+        max-width: 1000px;
+        margin: 0 auto;
+      }
+      article {
+        width: calc(50% - 1rem);
+        position: relative;
+        a {
+          display: block;
+          text-decoration: none;
+        }
+
+        .filters {
+          position: absolute;
+          right: 20px;
+          top: 20px;
+          text-align: right;
+          z-index: 2;
+          font-size: 0.875rem;
+          opacity: 0.1;
+          a {
+            display: inline-block;
+            color: #fff;
+          }
+        }
+
+        &:hover {
+          .filters {
+            opacity: 1;
+          }
+        }
+        .post-category {
+          text-transform: uppercase;
+          font-weight: bold;
+        }
+        .post-tags {
+          a {
+            margin-left: 12px;
+            padding-block: 5px;
+          }
+        }
+      }
+      article * {
+        transition: 0.2s ease;
+      }
+      article:first-child {
+        width: 100%;
+        margin-bottom: 1rem;
+        text-align: center;
+      }
+      article:first-child img {
+        width: 100%;
+      }
+      article:first-child .title {
+        font-size: 2.369rem;
+      }
+      article img {
+        margin-bottom: 0.5rem;
+        border-radius: 12px;
+      }
+
+      .title {
+        margin: 0;
+        color: rgb(var(--black));
+        line-height: 1;
+      }
+      .date {
+        margin: 0;
+        color: rgb(var(--gray));
+      }
+      article a:hover h4,
+      article a:hover .date {
+        color: rgb(var(--accent));
+      }
+      .articles a:hover img {
+        box-shadow: var(--box-shadow);
+      }
+
+      @media (max-width: 720px) {
+        .articles {
+          gap: 0.5em;
+        }
+        article {
+          width: 100%;
+          text-align: center;
+        }
+        article:first-child {
+          margin-bottom: 0;
+        }
+        article:first-child .title {
+          font-size: 1.563em;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <Header />
+    <main>
+      <section>
+        <Categories
+          categories={allCategories}
+          categoryLabel="Categorías"
+          currentCategory={currentCategory}
+          type="blog"
+        />
+        <Tags
+          tags={allTags}
+          tagsLabel="Tags"
+          currentTag={currentTag}
+          type="blog"
+        />
+        <div class="articles">
+          {
+            paginatedPosts.map((post) => (
+              <article>
+                <a href={`/blog/${post.id}/`}>
+                  {post.data.heroImage && (
+                    <Image
+                      width={720}
+                      height={360}
+                      src={post.data.heroImage}
+                      alt=""
+                    />
+                  )}
+                  <h4 class="title">
+                    <span>{post.data.title}</span>
+                  </h4>
+                  <p class="date">
+                    <FormattedDate date={post.data.pubDate} />
+                  </p>
+                </a>
+
+                <div class="filters">
+                  {post.data.category && (
+                    <div class="post-category">
+                      <a
+                        href={`/blog?category=${encodeURIComponent(post.data.category)}`}
+                      >
+                        <span>{post.data.category}</span>
+                      </a>
+                    </div>
+                  )}
+                  {post.data.tags && post.data.tags.length > 0 && (
+                    <div class="post-tags">
+                      {post.data.tags.map((tag) => (
+                        <a href={`/blog?tag=${encodeURIComponent(tag)}`}>
+                          <span>#{tag}</span>
+                        </a>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </article>
+            ))
+          }
+        </div>
+        <Pagination
+          totalPages={totalPages}
+          currentPage={currentPage}
+          paginationBase={paginationBase}
+          baseQuery={baseQuery}
+          previous="⇐"
+          next="⇒"
+        />
+      </section>
+    </main>
+    <Footer />
+  </body>
+</html>

@@ -1,0 +1,75 @@
+---
+export interface Props {
+  categories: string[];
+  categoryLabel: string;
+  currentCategory?: string;
+  type?: "blog";
+}
+const {
+  categories,
+  categoryLabel,
+  currentCategory,
+  type = "blog",
+} = Astro.props;
+---
+
+{
+  categories.length > 0 && (
+    <ul class="ul_reset categories">
+      {/* {categoryLabel}:{" "} */}
+      {categories.map((cat, i) => (
+        <li>
+          <a
+            href={`/${type}?category=${encodeURIComponent(cat)}`}
+            class={currentCategory === cat ? "current" : ""}
+          >
+            <span>{cat}</span>
+            {i < categories.length - 1 ? " " : ""}
+          </a>
+        </li>
+      ))}
+      {currentCategory && !categories.includes(currentCategory) && (
+        <span class="current">{currentCategory}</span>
+      )}
+    </ul>
+  )
+}
+
+<style>
+  .categories {
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(var(--black), 5%);
+
+    background-color: #fff;
+    mask: linear-gradient(
+      90deg,
+      transparent,
+      white 10%,
+      white 90%,
+      transparent
+    );
+    margin-bottom: 15px;
+    padding-top: 10px;
+
+    li {
+      display: inline-block;
+      a {
+        display: block;
+        padding: 10px 12px;
+        text-decoration: none;
+        color: rgb(var(--gray));
+
+        &:hover,
+        &.current {
+          color: var(--accent);
+        }
+
+        &.current {
+          span {
+            background-size: 100% 1px;
+          }
+        }
+      }
+    }
+  }
+</style>

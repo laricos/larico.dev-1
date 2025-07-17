@@ -1,0 +1,88 @@
+---
+import HeaderLink from "./HeaderLink.astro";
+import { SITE_TITLE } from "../consts";
+import SocialLinks from "./SocialLinks.astro";
+---
+
+<header>
+  <nav>
+    <a class="logo" href="/" title={SITE_TITLE}>
+      <img src="/favicon.svg" alt="Larico.DEV Website" />
+      <strong><span>{SITE_TITLE}</span></strong>
+    </a>
+
+    <div class="internal-links">
+      <HeaderLink href="/">Inicio</HeaderLink>
+      <HeaderLink href="/blog">Blog</HeaderLink>
+      <HeaderLink href="/about">Yo</HeaderLink>
+      <HeaderLink href="/tools">Tools/Herramientas</HeaderLink>
+    </div>
+    <div class="social-links">
+      <SocialLinks />
+    </div>
+  </nav>
+</header>
+<style>
+  header {
+    margin: 0;
+    padding: 0 1em;
+    background: white;
+    box-shadow: 0 2px 8px rgba(var(--black), 5%);
+    position: sticky;
+    top: 0;
+    z-index: 2;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+
+    img {
+      width: 32px;
+      display: block;
+    }
+    strong {
+      color: var(--accent);
+    }
+  }
+  nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  nav a {
+    color: var(--black);
+    border-bottom: 4px solid transparent;
+    text-decoration: none;
+    padding: 0.5rem 0.5rem;
+  }
+  nav a.active {
+    text-decoration: none;
+    border-bottom-color: var(--accent);
+  }
+  .social-links,
+  .social-links a {
+    display: flex;
+  }
+  @media (max-width: 720px) {
+    .social-links {
+      display: none;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .logo {
+      img {
+        width: 45px;
+      }
+      strong {
+        font-size: 1.4em;
+      }
+    }
+    nav {
+      .internal-links {
+        padding: 0.5rem 1rem;
+      }
+    }
+  }
+</style>

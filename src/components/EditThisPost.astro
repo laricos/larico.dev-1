@@ -1,0 +1,86 @@
+---
+import { execSync } from "node:child_process";
+import { existsSync } from "node:fs";
+import FormattedDate from "@/components/FormattedDate.astro";
+const { sourcePath } = Astro.props;
+const repoUrl = "https://github.com/laricoDGT/larico.dev/edit/main/";
+
+let editPath = sourcePath;
+
+if (!editPath) {
+  const pathname = Astro.url.pathname;
+  if (pathname.startsWith("/blog/")) {
+    let slug = pathname.replace(/^\/blog\//, "").replace(/\/$/, "");
+    if (!slug) {
+      editPath = "src/pages/blog/index.astro";
+    } else {
+      const base = `src/content/blog/${slug}`;
+      if (existsSync(`${base}.mdx`)) {
+        editPath = `${base}.mdx`;
+      } else if (existsSync(`${base}.md`)) {
+        editPath = `${base}.md`;
+      } else if (existsSync(`${base}.astro`)) {
+        editPath = `${base}.astro`;
+      } else {
+        editPath = `${base}.md`;
+      }
+    }
+  } else {
+    let page = pathname.replace(/^\/+|\/+$/g, "");
+    if (!page) page = "index";
+    const base = `src/pages/${page}`;
+    if (existsSync(`${base}.astro`)) {
+      editPath = `${base}.astro`;
+    } else if (existsSync(`${base}.mdx`)) {
+      editPath = `${base}.mdx`;
+    } else if (existsSync(`${base}.md`)) {
+      editPath = `${base}.md`;
+    } else {
+      editPath = `${base}.astro`;
+    }
+  }
+}
+
+const editUrl = repoUrl + editPath;
+
+// Obtener la fecha del último commit del archivo fuente
+let updatedDate = null;
+try {
+  const gitDate = execSync(`git log -1 --format=%cI ${editPath}`)
+    .toString()
+    .trim();
+  updatedDate = new Date(gitDate);
+  if (isNaN(updatedDate.getTime())) {
+    updatedDate = null;
+  }
+} catch (e) {
+  updatedDate = null;
+}
+---
+
+<hr />
+<a class="edit-link" href={editUrl} target="_blank" rel="noopener noreferrer">
+  📝 Edit this page
+</a>
+
+{
+  updatedDate && (
+    <small class="last-updated-on">
+      Updated: <FormattedDate date={updatedDate} />
+    </small>
+  )
+}
+<hr />
+
+<style>
+  .edit-link {
+    display: block;
+    max-width: fit-content;
+    margin: auto;
+    text-decoration: none;
+    color: rgb(var(--gray));
+    &:hover {
+      color: var(--accent);
+    }
+  }
+</style>

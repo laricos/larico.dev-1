@@ -1,0 +1,112 @@
+---
+import { getCollection } from "astro:content";
+import FormattedDate from "./FormattedDate.astro";
+import { Image } from "astro:assets";
+
+interface Props {
+  category?: string;
+  limit?: number;
+}
+
+const { category, limit = 6 } = Astro.props;
+
+let posts = await getCollection("blog");
+
+if (category) {
+  posts = posts.filter((post) => post.data.category === category);
+}
+
+posts = posts.sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+const latestPosts = posts.slice(0, limit);
+---
+
+<ul class="ul_reset latest-posts">
+  {
+    latestPosts.map((post) => (
+      <li>
+        {post.data.heroImage && (
+          <a href={`/blog/${post.id}/`}>
+            <Image
+              src={post.data.heroImage}
+              alt={post.data.title}
+              width={400}
+              height={200}
+              class="hero-image"
+            />
+          </a>
+        )}
+
+        <a href={`/blog/${post.id}/`}>
+          <h3>
+            <span>{post.data.title}</span>
+          </h3>
+        </a>
+
+        {post.data.category && (
+          <small class="category">
+            <a
+              href={`/blog?category=${encodeURIComponent(post.data.category)}`}
+            >
+              <span>{post.data.category}</span>
+            </a>
+          </small>
+        )}
+
+        <FormattedDate class:list={"date"} date={post.data.pubDate} />
+
+        {/* {post.data.tags && post.data.tags.length > 0 && (
+          <span class="tags">
+            {post.data.tags.map((tag) => (
+              <a href={`/blog?tag=${encodeURIComponent(tag)}`} class="tag">
+                #{tag}
+              </a>
+            ))}
+          </span>
+        )} */}
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .latest-posts {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
+
+    li {
+      line-height: normal;
+    }
+
+    .hero-image {
+      display: block;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+    }
+
+    a {
+      text-decoration: none;
+      display: block;
+    }
+
+    h3 {
+      font-size: 1.3rem;
+      margin: 8px 0 4px 0;
+      line-height: normal;
+    }
+
+    .category {
+      text-transform: uppercase;
+      font-size: 0.875rem;
+      margin-bottom: 5px;
+      display: block;
+    }
+    .date {
+      font-size: 0.875rem;
+      display: block;
+      opacity: 0.8;
+    }
+  }
+</style>
